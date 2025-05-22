@@ -1,0 +1,55 @@
+# Ignore everything by default
+*
+
+# --- Keep these files ---
+# Python source scripts
+!*.py
+
+# The final PDF report
+!report.pdf
+
+# This .gitignore file itself
+!.gitignore
+
+# --- Ignore these patterns and directories ---
+# Python specific artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Output directory from demo.py
+output_images/
+
+# Input image file
+basketball_large.png
+
+# LaTeX auxiliary files
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.synctex(busy)
+*.fdb_latexmk
+*.fls
+*.bbl
+*.blg
+_minted*/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
