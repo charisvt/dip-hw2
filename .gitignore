@@ -8,6 +8,9 @@
 # The final PDF report
 !report.pdf
 
+# The LaTeX source for the report
+!report.tex
+
 # This .gitignore file itself
 !.gitignore
 

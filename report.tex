@@ -1,0 +1,154 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[greek,english]{babel}
+\usepackage{alphabeta}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red!60!black},
+  breaklines=true,
+  showstringspaces=false
+}
+
+\title{Ανίχνευση ακμών και κύκλων}
+\author{Βογιατζής Χαρίσιος ΑΕΜ: 9192}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Σε αυτήν την εργασία υλοποιούμε και εξετάζουμε τρεις αλγορίθμους
+για \emph{ανίχνευση} ακμών και κύκλων σε grayscale εικόνες:
+\emph{sobel}, \emph{LoG} και \emph{Hough}.
+\end{abstract}
+
+\section{Εισαγωγή}
+Στόχος μας είναι:
+\begin{itemize}
+  \item \textbf{Ανίχνευση ακμών}: Χρήση Τελεστή Sobel και Τελεστή Laplacian of Gaussian (LoG).
+  \item \textbf{Ανίχνευση κύκλων}: Χρήση μεθόδου Hough.
+\end{itemize}
+
+\section{Υλοποίηση}
+
+\subsection{Συναρτήσεις}
+\begin{itemize}
+  \item \texttt{\texttt{fir\_conv.py}}:
+    Βοηθητική συνάρτηση για τον υπολογισμό της συνέλιξης μιας μάσκας (kernel) και της εικόνας.
+  
+  \item \texttt{sobel\_edge.py}:
+    Συνάρτηση που χρησιμοποιεί τον τελεστή Sobel για να υπολογίσει το μέτρο της κλίσης σε κάθε σημείο της εικόνας, εντοπίζοντας έτσι περιοχές με μεγάλες χωρικές συχνότητες που αντιστοιχούν σε ακμές. Χρησιμοποιεί δύο συνελικτικούς kernels για να προσεγγίσει τις παραγώγους στην οριζόντια και στην κατακόρυφη διεύθυνση. Το μέτρο της κλήσης, έπειτα, περνάει από ένα κατώφλι (threshold) για να δημιουργηθεί ένας δυαδικός πίνακας-εικόνα που περιέχει τις ακμές.
+
+  \item \texttt{\texttt{log\_edge.py}}:
+    Συνάρτηση που χρησιμοποιεί τον τελεστή Laplacian of Gaussian (LoG). Αρχικά χρησιμοποιείται ένα Gaussian (βαθυπερατό) φίλτρο για να εξομαλύνει τον θόρυβο και στη συνέχεια τον τελεστή Laplace για να εντοπίσει περιοχές με μεγάλες αλλαγές έντασης. Οι ακμές βρίσκονται στα zero-crossings της εξόδου του LoG.
+
+  \item \texttt{\texttt{circ\_hough.py}}:
+    Συνάρτηση που χρησιμοποιεί τη μέθοδο Hough για να ανιχνεύση (στην περίπτωση μας) κύκλους. 
+    Επιλέχθηκε να χρησιμοποιηθεί η μέθοδος sobel για την εξαγωγή της binary εικόνας και της χρήσης της ως είσοδο εδώ.
+\end{itemize}
+
+\subsection{Demo Script (\texttt{demo.py})}
+Έχει δημιουργηθεί ένα script επίδειξης demo.py το οποίο παράγει τις output εικόνες που παρουσιάζονται στα αποτελέσματα καθώς και συγκρίσεις με την grayscale εκδοχή της αρχικής εικόνας.
+Το script χρησιμοποιεί multithreading και βελτιστοποιήσεις καθώς οι αρχικοί χρόνοι εκτέλεσης ήταν υπερβολικά μεγάλοι. Δοκιμάστηκαν πολλοί συνδιασμοί διαφορετικών παραμέτρων (V\_min, κλπ) ώστε να βελτιστοποιηθεί το runtime και να βελτιωθεί ο εντοπισμός κύκλων.
+
+\section{Αποτελέσματα}
+\subsection{sobel\_edge() για διάφορες threshold τιμές}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{sobel_comparison_thres0.1.png}
+  \label{fig:Sobel-0.1}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{sobel_comparison_thres0.2.png}
+  \label{fig:Sobel-0.2}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{sobel_comparison_thres0.3.png}
+  \label{fig:Sobel-0.3}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{sobel_comparison_thres0.4.png}
+  \label{fig:Sobel-0.4}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{sobel_comparison_thres0.5.png}
+  \label{fig:Sobel-0.5}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Figure_1.png}
+  \label{fig:Sobel-fig}
+\end{figure}
+
+Όπως είναι αναμενόμενο καθώς αυξάνουμε το κατώφλι, λιγότερα σημεία εντοπίζονται ως σημεία ακμών (λευκά σημεία στα binary διαγράμματα). Αυτό επιβεβαιώνεται και από την καμπύλη του τελευταίου διάγραμματος. Παρατηρούμε ότι μία τιμή κατωφλίου στο [0.4-0.5] έχει το καλύτερο αποτέλεσμα.
+
+\subsection{log\_edge()}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{log_comparison.png}
+  \label{fig:LoG}
+\end{figure}
+
+Όπως διαπιστώνουμε το αποτέλεσμα εδώ δεν είναι ικανοποιητικό και είναι υποδεέστερο. Πιθανώς με άλλη μάσκα (kernel) να είχαμε καλύτερο αποτέλεσμα, ή ακόμη και να υπάρχει κάποιο μικρό bug στην υλοποίηση.
+
+\subsection{circ\_hough()}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{hough_circles_vmin4000_sobel0.4_scale0.25.png}
+  \label{fig:hough_vmin4000}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{hough_circles_vmin5000_sobel0.4_scale0.25.png}
+  \label{fig:hough_vmin5000}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{hough_circles_vmin6000_sobel0.4_scale0.25.png}
+  \label{fig:hough_vmin6000}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{hough_circles_vmin7000_sobel0.4_scale0.25.png}
+  \label{fig:hough_vmin7000}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{hough_circles_vmin8000_sobel0.4_scale0.25.png}
+  \label{fig:hough_vmin8000}
+\end{figure}
+
+Επιλέχθηκε να γίνει scale down της αρχικής εικόνας στο .25 για να μειωθεί ο χρόνος εκτέλεσης, γεγονός που επηρεάζει την ανίχνευση των κύκλων της εικόνας.
+
+\subsection{Σημείωση}
+Η αναφορά θα έπρεπε να είναι πληρέστερη αλλά οι δοκιμές των διαφορετικών παραμέτρων ήταν πολύ χρονοβόρες και περιόρισαν τον εναπομείναντα χρόνο μου. 
+
+\section{Κώδικας}
+Μπορείτε να βρείτε τον κώδικα και στο \href{https://github.com/charisvt/dip-hw2}{Github}.
+\end{document}
